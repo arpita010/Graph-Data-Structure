@@ -1,0 +1,92 @@
+//{ Driver Code Starts
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class GFG {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        while (T-- > 0) {
+            int n = sc.nextInt();
+            int m = sc.nextInt();
+            int[][] edge = new int[m][2];
+            for (int i = 0; i < m; i++) {
+                edge[i][0] = sc.nextInt();
+                edge[i][1] = sc.nextInt();
+            }
+
+            Solution obj = new Solution();
+            int ans = obj.Solve(n, edge);
+            System.out.println(ans);
+        }
+    }
+}
+
+// } Driver Code Ends
+
+
+class Solution {
+
+    public int Solve(int n, int[][] edge) {
+        // Code here
+        int m=edge.length;
+        DisjointSet ds=new DisjointSet(n); 
+        for(int i=0;i<m;i++)
+        {
+            ds.unionByRank(edge[i][0],edge[i][1]);
+        }
+        int extraedges=ds.extra;
+        int connectedComponents=0;
+        List<Integer> parent=ds.parent;
+        for(int i=0;i<parent.size();i++)
+        if(i==parent.get(i))connectedComponents++;
+        if(extraedges>=connectedComponents-1)
+        {
+            return connectedComponents-1;
+        }
+        return -1;
+    }
+}
+
+class DisjointSet
+{
+    int extra=0;
+    List<Integer> rank=new ArrayList<>();
+    List<Integer> parent=new ArrayList<>();
+    public DisjointSet(int n)
+    {
+        for(int i=0;i<n;i++)
+        {
+            parent.add(i);
+            rank.add(0);
+        }
+    }
+    public int findParent(int node)
+    {
+        if(node==parent.get(node))return node;
+        parent.set(node,findParent(parent.get(node)));
+        return parent.get(node);
+    }
+    public void unionByRank(int u,int v)
+    {
+        int ulp_u=findParent(u);
+        int ulp_v=findParent(v);
+        if(ulp_u==ulp_v)
+        {
+            extra++;
+            return;
+        }
+        if(rank.get(ulp_u)<rank.get(ulp_v))
+        parent.set(ulp_u,ulp_v);
+        else if(rank.get(ulp_u)>rank.get(ulp_v))
+        parent.set(ulp_v,ulp_u);
+        else
+        {
+            parent.set(ulp_u,ulp_v);
+            rank.set(ulp_v,rank.get(ulp_v)+1);
+        }
+    }
+    
+    
+}
