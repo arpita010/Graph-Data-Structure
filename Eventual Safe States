@@ -1,0 +1,92 @@
+//{ Driver Code Starts
+// Initial Template for Java
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+// Position this line where user code will be pasted.
+
+class GFG {
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        int T = sc.nextInt();
+        while (T-- > 0) {
+            int V = sc.nextInt();
+            int E = sc.nextInt();
+
+            List<List<Integer>> adj = new ArrayList<>();
+
+            for (int i = 0; i < V; i++) {
+                adj.add(new ArrayList<>());
+            }
+            for (int i = 0; i < E; i++) {
+                int u = sc.nextInt();
+                int v = sc.nextInt();
+
+                adj.get(u).add(v);
+            }
+
+            Solution obj = new Solution();
+            List<Integer> safeNodes = obj.eventualSafeNodes(V, adj);
+            for (int i : safeNodes) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+// } Driver Code Ends
+
+
+// User function Template for Java
+
+class Solution {
+
+    List<Integer> eventualSafeNodes(int V, List<List<Integer>> adj) {
+
+        // Your code here
+        
+        
+        // all nodes of cycle and nodes that lead to a cycle are not the safe nodes;
+        
+        boolean[] vis=new boolean[V];
+        boolean[] pathvis=new boolean[V];
+        Arrays.fill(vis,false);
+        Arrays.fill(pathvis,false);
+        boolean[] check=new boolean[V];
+        Arrays.fill(check,false);
+        List<Integer> safe=new ArrayList<>();
+        for(int i=0;i<V;i++)
+        {
+            if(!vis[i])
+            {
+                dfs(i,adj,vis,pathvis,check);
+            }
+        }
+        for(int i=0;i<V;i++)
+        {
+            if(check[i])
+            safe.add(i);
+        }
+        Collections.sort(safe);
+        return safe;
+        
+    }
+    private boolean dfs(int src,List<List<Integer>> adj,boolean[] vis,boolean[] pathvis,boolean[] check)
+    {
+        vis[src]=true;
+        pathvis[src]=true;
+        check[src]=false;
+        for(int it:adj.get(src))
+        {
+            if(!vis[it])
+            {
+                if(dfs(it,adj,vis,pathvis,check))return true;
+            }else if(pathvis[it])return true;
+        }
+        pathvis[src]=false;
+        check[src]=true;
+        return false;
+    }
+}
