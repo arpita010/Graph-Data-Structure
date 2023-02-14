@@ -1,0 +1,92 @@
+//{ Driver Code Starts
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+class GFG
+{
+    public static void main(String[] args) throws IOException
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int T = Integer.parseInt(br.readLine().trim());
+        while(T-->0)
+        {
+            String[] s = br.readLine().trim().split(" ");
+            int n = Integer.parseInt(s[0]);
+            int m = Integer.parseInt(s[1]);
+            int[][] grid = new int[n][m];
+            for(int i = 0; i < n; i++){
+                String[] S = br.readLine().trim().split(" ");
+                for(int j = 0; j < m; j++){
+                    grid[i][j] = Integer.parseInt(S[j]);
+                }
+            }
+            Solution obj = new Solution();
+            int[][] ans = obj.nearest(grid);
+            for(int i = 0; i < ans.length; i++){
+                for(int j = 0; j < ans[i].length; j++){
+                    System.out.print(ans[i][j] + " ");
+                }
+                System.out.println();
+            }
+        }
+    }
+}
+// } Driver Code Ends
+
+
+class Solution
+{
+    //Function to find distance of nearest 1 in the grid for each cell.
+    public int[][] nearest(int[][] grid)
+    {
+        // Code here
+        
+        int n=grid.length;
+        int m=grid[0].length;
+        
+        int[][] ans=new int[n][m];
+        boolean[][] vis=new boolean[n][m];
+         Queue<int[]> queue=new LinkedList<>();
+        int[] dr={0,1,0,-1};
+        int[] dc={1,0,-1,0};
+        
+        
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(grid[i][j]==1)
+                {
+                    vis[i][j]=true;
+                    queue.add(new int[]{i,j,0});
+                }
+                else
+                vis[i][j]=false;
+            }
+        }
+        
+        while(!queue.isEmpty())
+        {
+            int[] cell=queue.remove();
+            int row=cell[0];
+            int col=cell[1];
+            int steps=cell[2];
+            ans[row][col]=steps;
+            for(int i=0;i<4;i++)
+            {
+                int newr=row+dr[i];
+                int newc=col+dc[i];
+                if(newr>=0&&newr<n&&newc>=0&&newc<m&&!vis[newr][newc])
+                {
+                    queue.add(new int[]{newr,newc,steps+1});
+                    vis[newr][newc]=true;
+                }
+                
+            }
+            
+        }
+        
+        return ans;
+    }
+    
+}
